@@ -297,12 +297,12 @@ footer .container{display:flex;justify-content:space-between;gap:12px;flex-wrap:
           </ul>
           <p class="status" id="camera">מצלמה: סטטית בגובה החזה, התקרבות קלה בשתי השניות האחרונות.</p>
           <div class="slate">
-            <header><h3>Grok Imagine · תמונה לווידאו</h3><button class="btn secondary small" type="button" data-copy="grokOut">העתק</button></header>
+            <header><h3>Grok Imagine · תמונה לווידאו</h3><span class="actions"><button class="btn secondary small" type="button" data-copy="grokOut">העתק</button><button class="btn small" type="button" data-copy="grokOut" data-open="https://grok.com/imagine">העתק ופתח בגרוק ↗</button></span></header>
             <pre id="grokOut">Animate the subject from the image. 0–2s: he faces the camera and waves his right hand twice. 2–4.5s: he grips the frying pan with both hands and flips it upward in one smooth toss. 4.5–8s: he slowly turns a half circle and stops in profile, smiling. Camera: static at chest height, gentle push-in during the last 2 seconds. Soft 3D animation, bright kitchen background, natural weight and timing, consistent appearance. Only the subject from the image appears; no women or girls in the scene.</pre>
             <p class="where">להדביק ב-Grok Imagine יחד עם התמונה שלך, במצב תמונה לווידאו.</p>
           </div>
           <div class="slate">
-            <header><h3>Veo 3.1 · Gemini / Flow</h3><button class="btn secondary small" type="button" data-copy="veoOut">העתק</button></header>
+            <header><h3>Veo 3.1 · Gemini / Flow</h3><span class="actions"><button class="btn secondary small" type="button" data-copy="veoOut">העתק</button><button class="btn small" type="button" data-copy="veoOut" data-open="https://gemini.google.com/app">העתק ופתח ב-Gemini ↗</button><button class="btn secondary small" type="button" data-copy="veoOut" data-open="https://labs.google/fx/tools/flow">ב-Flow ↗</button></span></header>
             <pre id="veoOut">Subject: the chef character from the reference image; keep his exact face, outfit and proportions.
 Action (8s, timed): 0–2s he waves his right hand twice toward the camera; 2–4.5s he grips the pan with both hands and tosses it upward, catching it cleanly; 4.5–8s he turns a slow half circle and settles in profile with a smile.
 Camera: locked-off medium shot at chest height, subtle push-in over the final 2 seconds.
@@ -441,11 +441,14 @@ Avoid: morphing, extra limbs, identity drift, camera shake, women or girls in th
 
   // copy
   document.querySelectorAll('[data-copy]').forEach(btn => {
+    const label = btn.textContent;
     btn.addEventListener('click', async () => {
       const el = $(btn.dataset.copy);
-      try { await navigator.clipboard.writeText(el.textContent); btn.textContent = 'הועתק'; }
+      const win = btn.dataset.open ? window.open('', '_blank') : null;
+      try { await navigator.clipboard.writeText(el.textContent); btn.textContent = btn.dataset.open ? 'הועתק, הדבק שם' : 'הועתק'; }
       catch { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'סומן'; }
-      setTimeout(() => btn.textContent = 'העתק', 1800);
+      if (btn.dataset.open) { if (win) win.location.href = btn.dataset.open; else location.href = btn.dataset.open; }
+      setTimeout(() => btn.textContent = label, 2500);
     });
   });
 
