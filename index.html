@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>סטודיו מושן</title>
+<meta name="description" content="מנתח סרטון ייחוס ומפיק פרומפטי תנועה מתוזמנים ל-Grok Imagine ול-Veo 3.1, עם מדריך להעברת תנועה חינמית ב-Wan Animate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karantina:wght@700&family=Assistant:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eceef1; --surface:#f8f9fb; --ink:#14171c; --muted:#5b6370; --line:#cfd4dc;
+  --accent:#2b54e0; --accent-ink:#ffffff; --strip:#1b1e24; --strip-hole:#eceef1; --warn:#9a5b00; --ok:#1f7a4d;
+  --display:"Karantina","Assistant",system-ui,sans-serif;
+  --body:"Assistant",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#111318; --surface:#191c22; --ink:#e6e8ec; --muted:#9aa2ae; --line:#2c313a;
+  --accent:#7d9bff; --accent-ink:#0d1020; --strip:#05060a; --strip-hole:#191c22; --warn:#f0b35a; --ok:#5ccf93; color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6}
+img,video{max-width:100%}
+a{color:var(--accent)}
+h1,h2,h3,p{margin:0}
+[hidden]{display:none!important}
+.container{max-width:1080px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+
+/* site header */
+.site-header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.logo{font-family:var(--display);font-size:34px;line-height:1;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo i{display:inline-block;width:22px;height:16px;border-radius:3px;background:var(--strip);box-shadow:inset 0 3px 0 -1px var(--strip-hole),inset 0 -3px 0 -1px var(--strip-hole)}
+.site-nav{display:flex;gap:4px}
+.site-nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:15px;padding:6px 12px;border-radius:8px}
+.site-nav a:hover,.site-nav a:focus-visible{background:var(--surface);outline:none}
+.menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font:inherit;font-weight:600;cursor:pointer}
+@media (max-width:720px){
+  .menu-btn{display:block}
+  .site-nav{display:none;position:absolute;top:60px;left:0;right:0;flex-direction:column;background:var(--surface);border-bottom:1px solid var(--line);padding:8px max(20px,env(safe-area-inset-right)) 12px max(20px,env(safe-area-inset-left))}
+  .site-nav.open{display:flex}
+}
+
+/* hero */
+.hero{padding-block:64px 48px}
+.hero .container{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+@media (max-width:820px){.hero .container{grid-template-columns:1fr}}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted);direction:ltr;text-align:right}
+.hero h1{font-family:var(--display);font-size:clamp(60px,11vw,112px);line-height:.88;margin-top:10px}
+.hero p.lede{color:var(--muted);font-size:19px;max-width:46ch;margin-top:16px}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.btn{display:inline-block;font-family:var(--body);font-size:16px;font-weight:700;border-radius:10px;padding:11px 20px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);text-decoration:none}
+.btn.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:6px 12px;font-size:13px;font-weight:600;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hero-visual{background:var(--strip);border-radius:14px;padding:22px 16px;position:relative;overflow:hidden}
+.hero-visual::before,.hero-visual::after{content:"";position:absolute;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,transparent 0 10px,var(--strip-hole) 10px 20px);opacity:.5}
+.hero-visual::before{top:6px}.hero-visual::after{bottom:6px}
+.hv-row{display:flex;gap:8px;direction:ltr;align-items:flex-end}
+.hv-cell{flex:1;display:flex;flex-direction:column;gap:6px;align-items:center}
+.hv-cell svg{width:100%;height:auto;background:#262a32;border-radius:3px}
+.hv-cell span{font-family:var(--mono);font-size:10px;color:#aab2bf}
+.hv-arrow{font-family:var(--mono);color:#aab2bf;font-size:12px;text-align:center;margin-top:12px;direction:ltr}
+
+/* sections */
+section.block{padding-block:56px;border-top:1px solid var(--line)}
+.section-head{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;max-width:62ch}
+.section-head h2{font-family:var(--display);font-size:clamp(40px,6vw,56px);line-height:.95;text-wrap:balance}
+.section-head p{color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card .k{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.card h3{font-size:18px}
+.card p{color:var(--muted);font-size:15px}
+
+/* tool */
+.tool{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:900px){.tool{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.step{display:flex;flex-direction:column;gap:10px}
+.step + .step{border-top:1px solid var(--line);padding-top:16px}
+.step .num{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:500}
+.step h3{font-size:17px}
+.drop{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1.5px dashed var(--line);border-radius:10px;padding:12px 14px}
+.drop span{color:var(--muted);font-size:14px;min-width:0}
+input[type=file]{font-family:var(--body);font-size:14px;max-width:100%;color:var(--muted)}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+label.field{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;flex:1 1 140px;min-width:0}
+select,textarea,input[type=text],input[type=password]{font-family:var(--body);font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+textarea{min-height:80px;resize:vertical}
+.hint{font-size:13px;color:var(--muted)}
+.status{font-size:14px;color:var(--muted)}
+.status.err{color:var(--warn)}
+.status.ok{color:var(--ok)}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.strip{background:var(--strip);border-radius:6px;padding:14px 10px;overflow-x:auto;position:relative}
+.strip::before,.strip::after{content:"";position:absolute;left:0;right:0;height:6px;background:repeating-linear-gradient(90deg,transparent 0 8px,var(--strip-hole) 8px 16px);opacity:.55}
+.strip::before{top:4px}.strip::after{bottom:4px}
+.frames{display:flex;gap:6px;direction:ltr;width:max-content}
+.frame{display:flex;flex-direction:column;gap:3px;align-items:center}
+.frame img,.frame .ph{height:84px;width:auto;border-radius:2px;display:block}
+.frame .ph{width:58px;background:#2a2e36}
+.frame .tc{font-family:var(--mono);font-size:10px;color:#aab2bf}
+video{max-height:240px;border-radius:8px;background:var(--strip)}
+.subject{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.subject img{height:80px;border-radius:8px;border:1px solid var(--line)}
+details.settings{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--bg)}
+details.settings summary{cursor:pointer;font-weight:700}
+details.settings[open] summary{margin-bottom:10px}
+.keyrow{display:flex;gap:8px;flex-wrap:wrap}
+.keyrow input{flex:1 1 200px}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;padding:6px 10px;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* output */
+.out{display:flex;flex-direction:column;gap:16px}
+.tag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;border:1px solid var(--warn);border-radius:4px;padding:1px 6px;color:var(--warn);margin-inline-start:8px;vertical-align:middle}
+.beats{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.beats li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline}
+.beats .t{font-family:var(--mono);font-size:12px;color:var(--accent);direction:ltr;white-space:nowrap}
+.beats .d{min-width:0}
+.slate{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.slate header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.slate header h3{font-size:15px}
+.slate pre{margin:0;padding:12px 14px;font-family:var(--mono);font-size:13px;line-height:1.55;white-space:pre-wrap;word-break:break-word;direction:ltr;text-align:left}
+.slate .where{font-size:13px;color:var(--muted);padding:0 14px 12px}
+ul.tips{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:4px}
+
+/* guide */
+.guide-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:24px}
+@media (max-width:820px){.guide-grid{grid-template-columns:1fr}}
+ol.guide{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:12px}
+ol.guide li::marker{font-family:var(--mono);color:var(--accent);font-size:13px}
+.links{display:flex;flex-direction:column;gap:8px}
+.links a{font-weight:600;word-break:break-word}
+.note{font-size:14px;color:var(--muted);border-inline-start:3px solid var(--line);padding-inline-start:10px}
+
+/* faq */
+.faq{display:flex;flex-direction:column;gap:10px;max-width:760px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.faq summary{cursor:pointer;font-weight:700}
+.faq details p{margin-top:8px;color:var(--muted)}
+
+footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:14px}
+footer .container{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="#top"><i aria-hidden="true"></i>סטודיו מושן</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="siteNav">תפריט</button>
+    <nav class="site-nav" id="siteNav">
+      <a href="#how">איך זה עובד</a>
+      <a href="#tool">מחולל פרומפטים</a>
+      <a href="#wan">מושן בחינם</a>
+      <a href="#faq">שאלות</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="container">
+      <div>
+        <p class="eyebrow">REF ▸ FRAMES ▸ PROMPT</p>
+        <h1>תנועה מסרטון אחד, לכל מחולל וידאו</h1>
+        <p class="lede">מעלים סרטון ייחוס, והאתר מפרק את התנועה לשלבים ומנסח פרומפט מתוזמן ל-Grok Imagine ול-Veo 3.1. רוצים העברת תנועה אמיתית? יש גם מסלול חינמי.</p>
+        <div class="cta">
+          <a class="btn" href="#tool">התחל עכשיו</a>
+          <a class="btn secondary" href="#wan">המסלול החינמי</a>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hv-row">
+          <div class="hv-cell"><svg viewBox="0 0 60 80"><circle cx="30" cy="20" r="7" fill="#7d9bff"/><path d="M30 28v24M30 34l-12-8M30 34l12 4M30 52l-8 18M30 52l8 18" stroke="#7d9bff" stroke-width="4" stroke-linecap="round" fill="none"/></svg><span>0.0s</span></div>
+          <div class="hv-cell"><svg viewBox="0 0 60 80"><circle cx="30" cy="20" r="7" fill="#7d9bff"/><path d="M30 28v24M30 34l-12-14M30 34l12 -4M30 52l-8 18M30 52l8 18" stroke="#7d9bff" stroke-width="4" stroke-linecap="round" fill="none"/></svg><span>1.5s</span></div>
+          <div class="hv-cell"><svg viewBox="0 0 60 80"><circle cx="30" cy="16" r="7" fill="#7d9bff"/><path d="M30 24v22M30 30l-12-10M30 30l12-10M30 46l-10 14M30 46l10 14" stroke="#7d9bff" stroke-width="4" stroke-linecap="round" fill="none"/></svg><span>3.0s</span></div>
+          <div class="hv-cell"><svg viewBox="0 0 60 80"><circle cx="30" cy="20" r="7" fill="#7d9bff"/><path d="M30 28v24M30 34l-10 10M30 34l10 10M30 52l-6 18M30 52l6 18" stroke="#7d9bff" stroke-width="4" stroke-linecap="round" fill="none"/></svg><span>4.5s</span></div>
+        </div>
+        <p class="hv-arrow">0–1.5s: raises right arm ▸ 1.5–3s: jumps ▸ 3–4.5s: lands, arms down</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">HOW IT WORKS</p>
+        <h2>איך זה עובד</h2>
+        <p>גרוק ו-Veo לא מקבלים סרטון תנועה כקלט, ולכן האתר מתרגם את התנועה למילים מדויקות עם תזמונים.</p>
+      </div>
+      <div class="cards">
+        <div class="card"><span class="k">01</span><h3>מעלים סרטון ייחוס</h3><p>האתר מחלץ ממנו פריימים לפי סדר הזמן. הסרטון לא עולה לשום שרת חוץ מהניתוח.</p></div>
+        <div class="card"><span class="k">02</span><h3>Gemini מנתח את התנועה</h3><p>עם מפתח API חינמי שלך מ-Google AI Studio. בלי מפתח אפשר לבנות את הפרומפט ידנית.</p></div>
+        <div class="card"><span class="k">03</span><h3>מעתיקים ומדביקים</h3><p>פרומפט לגרוק ופרומפט ל-Veo, כל אחד בפורמט שמתאים לו, מוכנים להדבקה יחד עם התמונה שלך.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="tool">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">ROUTE 01 · GROK IMAGINE + VEO 3.1</p>
+        <h2>מחולל פרומפטי תנועה</h2>
+      </div>
+      <div class="tool">
+        <div class="panel">
+          <div class="step">
+            <span class="num">01</span>
+            <h3>סרטון הייחוס</h3>
+            <div class="drop"><span>3 עד 15 שניות, דמות אחת ברורה.</span><input type="file" id="refVideo" accept="video/*"></div>
+            <video id="vidPreview" controls muted playsinline hidden></video>
+            <div class="strip"><div class="frames" id="frames"></div></div>
+            <p class="status" id="frameStatus">הפריימים יופיעו כאן אחרי טעינת סרטון.</p>
+          </div>
+          <div class="step">
+            <span class="num">02</span>
+            <h3>התמונה שתונפש (לא חובה)</h3>
+            <div class="drop"><span>הדמות או החפץ שיזוזו בסרטון החדש.</span><input type="file" id="subjectImg" accept="image/*"></div>
+            <div class="subject" id="subjectWrap" hidden><img id="subjectPreview" alt="התמונה שתונפש"><button class="btn secondary small" id="clearSubject" type="button">הסר</button></div>
+          </div>
+          <div class="step">
+            <span class="num">03</span>
+            <h3>הגדרות</h3>
+            <div class="row">
+              <label class="field" for="duration">אורך
+                <select id="duration"><option value="6">6 שניות</option><option value="8" selected>8 שניות</option><option value="10">10 שניות</option><option value="15">15 שניות</option></select></label>
+              <label class="field" for="aspect">יחס מסך
+                <select id="aspect"><option value="9:16" selected>9:16 אנכי</option><option value="16:9">16:9 רוחבי</option><option value="1:1">1:1 ריבוע</option></select></label>
+              <label class="field" for="audio">סאונד
+                <select id="audio"><option value="ambient" selected>רקע בלבד</option><option value="sfx">אפקטים לתנועה</option><option value="none">בלי סאונד</option></select></label>
+            </div>
+            <label class="field" for="style">סגנון ורקע (אפשר בעברית)
+              <input type="text" id="style" placeholder="למשל: אנימציה תלת־ממדית רכה, רקע מטבח בהיר"></label>
+          </div>
+          <div class="step">
+            <span class="num">04</span>
+            <div class="tabs" role="tablist">
+              <button role="tab" id="tabAuto" aria-selected="true" aria-controls="paneAuto">ניתוח אוטומטי</button>
+              <button role="tab" id="tabManual" aria-selected="false" aria-controls="paneManual">בנייה ידנית</button>
+            </div>
+            <div id="paneAuto" role="tabpanel" class="step" style="border:0;padding:0">
+              <details class="settings" id="keyBox">
+                <summary>מפתח Gemini API <span class="hint" id="keyState">(לא הוגדר)</span></summary>
+                <div class="step" style="border:0;padding:0">
+                  <p class="hint">מקבלים מפתח חינם ב-<a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>. המפתח נשמר רק בדפדפן שלך ונשלח רק לגוגל.</p>
+                  <div class="keyrow"><input type="password" id="apiKey" dir="ltr" placeholder="AIza..." autocomplete="off"><button class="btn small" type="button" id="saveKey">שמור</button><button class="btn secondary small" type="button" id="clearKey">מחק</button></div>
+                  <label class="field" for="model">מודל
+                    <input type="text" id="model" dir="ltr" value="gemini-flash-latest"></label>
+                  <p class="hint">אם מתקבלת שגיאת מודל, החלף לשם מודל Flash אחר מהרשימה ב-AI Studio.</p>
+                </div>
+              </details>
+              <div class="actions">
+                <button class="btn" id="analyzeBtn" type="button" disabled>נתח והפק פרומפטים</button>
+                <button class="btn secondary small" id="stopBtn" type="button" hidden>עצור</button>
+              </div>
+              <p class="status" id="analyzeStatus">טען סרטון והגדר מפתח כדי להתחיל.</p>
+            </div>
+            <div id="paneManual" role="tabpanel" class="step" style="border:0;padding:0" hidden>
+              <p class="hint">כתוב את התנועה בשלבים עם זמנים, עדיף באנגלית פשוטה. שורה לכל שלב.</p>
+              <label class="field" for="mMotion">התנועה
+                <textarea id="mMotion" dir="ltr" placeholder="0–3s: raises both arms&#10;3–6s: jumps in place twice&#10;6–8s: bows to the camera"></textarea></label>
+              <div class="row">
+                <label class="field" for="mCam">מצלמה
+                  <select id="mCam">
+                    <option value="static locked-off shot">סטטית</option>
+                    <option value="slow push-in">התקרבות איטית</option>
+                    <option value="slow orbit around the subject">סיבוב סביב הדמות</option>
+                    <option value="smooth tracking shot following the subject">מעקב אחרי הדמות</option>
+                    <option value="handheld with light natural shake">כף יד, תנועה טבעית</option>
+                  </select></label>
+                <label class="field" for="mPace">קצב
+                  <select id="mPace"><option value="natural">טבעי</option><option value="slow, deliberate">איטי</option><option value="energetic, fast">אנרגטי</option></select></label>
+              </div>
+              <div class="actions"><button class="btn" type="button" id="manualBtn">בנה פרומפטים</button><span class="status" id="manualStatus"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel out" id="out" aria-live="polite">
+          <div>
+            <h3>פירוק התנועה<span class="tag" id="exTag">דוגמה</span></h3>
+            <p class="status" id="summary" style="margin-top:4px">דמות מצוירת של שף מנופפת לשלום, מקפיצה מחבת ומסתובבת חצי סיבוב אל המצלמה.</p>
+          </div>
+          <ul class="beats" id="beats">
+            <li><span class="t">0.0–2.0s</span><span class="d">עומד מול המצלמה, מרים יד ימין ומנופף פעמיים.</span></li>
+            <li><span class="t">2.0–4.5s</span><span class="d">אוחז במחבת בשתי ידיים ומקפיץ אותה כלפי מעלה.</span></li>
+            <li><span class="t">4.5–8.0s</span><span class="d">מסתובב חצי סיבוב לאט ונעצר בפרופיל, עם חיוך.</span></li>
+          </ul>
+          <p class="status" id="camera">מצלמה: סטטית בגובה החזה, התקרבות קלה בשתי השניות האחרונות.</p>
+          <div class="slate">
+            <header><h3>Grok Imagine · תמונה לווידאו</h3><button class="btn secondary small" type="button" data-copy="grokOut">העתק</button></header>
+            <pre id="grokOut">Animate the subject from the image. 0–2s: he faces the camera and waves his right hand twice. 2–4.5s: he grips the frying pan with both hands and flips it upward in one smooth toss. 4.5–8s: he slowly turns a half circle and stops in profile, smiling. Camera: static at chest height, gentle push-in during the last 2 seconds. Soft 3D animation, bright kitchen background, natural weight and timing, consistent appearance. Only the subject from the image appears; no women or girls in the scene.</pre>
+            <p class="where">להדביק ב-Grok Imagine יחד עם התמונה שלך, במצב תמונה לווידאו.</p>
+          </div>
+          <div class="slate">
+            <header><h3>Veo 3.1 · Gemini / Flow</h3><button class="btn secondary small" type="button" data-copy="veoOut">העתק</button></header>
+            <pre id="veoOut">Subject: the chef character from the reference image; keep his exact face, outfit and proportions.
+Action (8s, timed): 0–2s he waves his right hand twice toward the camera; 2–4.5s he grips the pan with both hands and tosses it upward, catching it cleanly; 4.5–8s he turns a slow half circle and settles in profile with a smile.
+Camera: locked-off medium shot at chest height, subtle push-in over the final 2 seconds.
+Style: soft 3D animation, bright warm kitchen, clean lighting.
+Format: 9:16 vertical.
+Audio: light kitchen ambience, a soft sizzle on the pan toss.
+Avoid: morphing, extra limbs, identity drift, camera shake, women or girls in the scene.</pre>
+            <p class="where">ב-Gemini: יצירת וידאו עם התמונה מצורפת. ב-Flow: התמונה כמסגרת פתיחה.</p>
+          </div>
+          <div>
+            <h3>טיפים ל-Veo</h3>
+            <ul class="tips" id="tips">
+              <li>אם התנועה נגמרת בתנוחה ברורה, צור תמונה של אותה דמות בתנוחת הסיום והשתמש בה כמסגרת סיום ב-Flow.</li>
+              <li>אם התוצאה מהירה מדי, האריך את טווחי הזמן בפרומפט ולא את אורך הסרטון.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="wan">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">ROUTE 02 · WAN 2.2 ANIMATE · OPEN SOURCE</p>
+        <h2>העברת תנועה אמיתית, בחינם</h2>
+        <p>מודל קוד פתוח של עליבאבא שמקבל סרטון ייחוס ותמונה, ומפיק סרטון שבו הדמות מבצעת בדיוק את אותה תנועה.</p>
+      </div>
+      <div class="guide-grid">
+        <div class="panel">
+          <ol class="guide">
+            <li>פתח את רשימת המרחבים בהאגינג פייס (בקישור משמאל) וחפש מרחב של Wan2.2 Animate.</li>
+            <li>בדוק בכרטיס המרחב שהוא <b>Running</b> ושהחומרה היא GPU או ZeroGPU. מרחב על cpu-basic מציג ממשק בלבד ולא ייצר סרטון.</li>
+            <li>העלה את התמונה שלך ואת סרטון הייחוס.</li>
+            <li>בחר <b>Move</b> (הדמות שלך מבצעת את התנועה) ולא Mix (שמחליף דמות בתוך הסרטון המקורי).</li>
+            <li>לחץ על יצירה והמתן. בשעות עומס התור יכול להגיע לחצי שעה.</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>לתוצאה טובה</h3>
+          <ul class="tips">
+            <li>סרטון ייחוס של 10 עד 20 שניות.</li>
+            <li>דמות אחת, תאורה בהירה ואחידה, רקע פשוט.</li>
+            <li>תמונה של גוף מלא או חצי גוף, במסגור דומה לסרטון.</li>
+          </ul>
+          <div class="links">
+            <a href="https://huggingface.co/spaces?search=wan%20animate" target="_blank" rel="noopener">מרחבי Wan Animate בהאגינג פייס ↗</a>
+            <a href="https://huggingface.co/Wan-AI/Wan2.2-Animate-14B" target="_blank" rel="noopener">דף המודל הרשמי ↗</a>
+            <a href="https://wan.video" target="_blank" rel="noopener">אפליקציית הרשת של Wan ↗</a>
+          </div>
+          <p class="note">המרחבים הקהילתיים מתחלפים ונסגרים מדי פעם. אם אחד לא עובד, נסה אחר.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="faq">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">FAQ</p>
+        <h2>שאלות נפוצות</h2>
+      </div>
+      <div class="faq">
+        <details><summary>למה לא פשוט לחבר את גרוק או את ג'מיני ישירות?</summary><p>המנויים לגרוק ולג'מיני הם לאפליקציות, ואף אחד מהם לא מקבל סרטון תנועה כקלט. לכן האתר מתרגם את התנועה לפרומפט שאתה מדביק בעצמך.</p></details>
+        <details><summary>האם הניתוח עולה כסף?</summary><p>מפתח Gemini API ממסלול החינם של Google AI Studio מספיק לשימוש רגיל. אם עוברים את המכסה היומית מקבלים שגיאה, והמכסה מתאפסת למחרת.</p></details>
+        <details><summary>איפה נשמר המפתח שלי?</summary><p>רק בדפדפן שלך (localStorage). האתר שולח אותו ישירות לשרתי גוגל ולשום מקום אחר. אפשר למחוק אותו בכל רגע בכפתור "מחק".</p></details>
+        <details><summary>מה ההבדל בין שני המסלולים?</summary><p>מסלול 1 משחזר את התנועה לפי תיאור, ולכן קרוב אבל לא זהה. מסלול 2 מעתיק את התנועה עצמה מהסרטון, אבל תלוי בשרת חינמי פנוי.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <span>סטודיו מושן</span>
+    <span>הסרטונים והתמונות מעובדים בדפדפן ונשלחים רק לניתוח שביקשת.</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const KEY = 'motionStudio.geminiKey', MODEL = 'motionStudio.model';
+  const store = {
+    get(k){ try { return localStorage.getItem(k) || ''; } catch { return ''; } },
+    set(k,v){ try { localStorage.setItem(k,v); } catch {} },
+    del(k){ try { localStorage.removeItem(k); } catch {} }
+  };
+  let frameBlobs = [], frameTimes = [], subjectBlob = null, ctl = null;
+  const fmt = t => t.toFixed(1);
+  const MAX_FRAMES = 8;
+
+  // menu
+  $('menuBtn').addEventListener('click', () => {
+    const open = $('siteNav').classList.toggle('open');
+    $('menuBtn').setAttribute('aria-expanded', open);
+  });
+  $('siteNav').addEventListener('click', e => { if (e.target.tagName === 'A') { $('siteNav').classList.remove('open'); $('menuBtn').setAttribute('aria-expanded', false); } });
+
+  // tabs
+  function selectTab(auto){
+    $('tabAuto').setAttribute('aria-selected', auto); $('tabManual').setAttribute('aria-selected', !auto);
+    $('paneAuto').hidden = !auto; $('paneManual').hidden = auto;
+  }
+  $('tabAuto').addEventListener('click', () => selectTab(true));
+  $('tabManual').addEventListener('click', () => selectTab(false));
+
+  // key
+  function loadKey(){
+    const k = store.get(KEY); $('apiKey').value = k;
+    const m = store.get(MODEL); if (m) $('model').value = m;
+    $('keyState').textContent = k ? '(שמור)' : '(לא הוגדר)';
+    if (!k) $('keyBox').open = true;
+    refresh();
+  }
+  $('saveKey').addEventListener('click', () => {
+    const k = $('apiKey').value.trim(); if (!k) return;
+    store.set(KEY, k); store.set(MODEL, $('model').value.trim() || 'gemini-flash-latest');
+    $('keyState').textContent = '(שמור)'; $('keyBox').open = false; refresh();
+  });
+  $('clearKey').addEventListener('click', () => { store.del(KEY); $('apiKey').value = ''; $('keyState').textContent = '(לא הוגדר)'; refresh(); });
+  $('model').addEventListener('change', () => store.set(MODEL, $('model').value.trim()));
+
+  function currentKey(){ return $('apiKey').value.trim(); }
+  function refresh(){
+    const ready = frameBlobs.length && currentKey();
+    $('analyzeBtn').disabled = !ready;
+    if (!ctl) $('analyzeStatus').textContent = !frameBlobs.length ? 'טען סרטון כדי להתחיל.' : !currentKey() ? 'הגדר מפתח Gemini כדי לנתח, או עבור לבנייה ידנית.' : 'מוכן לניתוח.';
+  }
+  $('apiKey').addEventListener('input', refresh);
+
+  // copy
+  document.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const el = $(btn.dataset.copy);
+      try { await navigator.clipboard.writeText(el.textContent); btn.textContent = 'הועתק'; }
+      catch { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'סומן'; }
+      setTimeout(() => btn.textContent = 'העתק', 1800);
+    });
+  });
+
+  // frames
+  const seek = (v, t) => new Promise(res => { const h = () => { v.removeEventListener('seeked', h); res(); }; v.addEventListener('seeked', h); v.currentTime = t; });
+  function placeholders(){
+    const box = $('frames'); box.textContent = '';
+    ['0.0','1.0','2.0','3.0','4.5','6.0','7.0','8.0'].forEach(t => {
+      const fr = document.createElement('div'); fr.className = 'frame';
+      const ph = document.createElement('div'); ph.className = 'ph';
+      const tc = document.createElement('span'); tc.className = 'tc'; tc.textContent = t + 's';
+      fr.append(ph, tc); box.append(fr);
+    });
+  }
+  placeholders();
+
+  $('refVideo').addEventListener('change', async e => {
+    const f = e.target.files[0]; if (!f) return;
+    const url = URL.createObjectURL(f);
+    const v = $('vidPreview'); v.src = url; v.hidden = false;
+    $('frameStatus').textContent = 'מחלץ פריימים…'; $('frameStatus').classList.remove('err');
+    const work = document.createElement('video'); work.muted = true; work.playsInline = true; work.preload = 'auto'; work.src = url;
+    try {
+      await new Promise((res, rej) => { work.onloadeddata = res; work.onerror = rej; });
+      const dur = work.duration; if (!isFinite(dur) || dur <= 0) throw 0;
+      const n = MAX_FRAMES;
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, 640 / work.videoWidth);
+      canvas.width = Math.round(work.videoWidth * scale); canvas.height = Math.round(work.videoHeight * scale);
+      const ctx = canvas.getContext('2d');
+      frameBlobs = []; frameTimes = [];
+      const box = $('frames'); box.textContent = '';
+      for (let i = 0; i < n; i++) {
+        const t = Math.min(dur - 0.05, (dur * (i + 0.5)) / n);
+        await seek(work, t);
+        ctx.drawImage(work, 0, 0, canvas.width, canvas.height);
+        const b = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.82));
+        frameBlobs.push(b); frameTimes.push(t);
+        const fr = document.createElement('div'); fr.className = 'frame';
+        const img = document.createElement('img'); img.alt = 'פריים ' + (i + 1); img.src = URL.createObjectURL(b);
+        const tc = document.createElement('span'); tc.className = 'tc'; tc.textContent = fmt(t) + 's';
+        fr.append(img, tc); box.append(fr);
+      }
+      $('frameStatus').textContent = `${n} פריימים מתוך ${fmt(dur)} שניות.`;
+    } catch {
+      frameBlobs = []; placeholders();
+      $('frameStatus').textContent = 'לא הצלחתי לקרוא את הסרטון. נסה קובץ MP4 אחר.'; $('frameStatus').classList.add('err');
+    }
+    refresh();
+  });
+
+  $('subjectImg').addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f) return;
+    subjectBlob = f; $('subjectPreview').src = URL.createObjectURL(f); $('subjectWrap').hidden = false;
+  });
+  $('clearSubject').addEventListener('click', () => { subjectBlob = null; $('subjectWrap').hidden = true; $('subjectImg').value = ''; });
+
+  // render
+  function render(d){
+    $('exTag').hidden = true;
+    $('summary').textContent = d.summary_he || '';
+    const ul = $('beats'); ul.textContent = '';
+    (d.beats || []).forEach(b => {
+      const li = document.createElement('li');
+      const t = document.createElement('span'); t.className = 't'; t.textContent = b.t || '';
+      const dd = document.createElement('span'); dd.className = 'd'; dd.textContent = b.he || '';
+      li.append(t, dd); ul.append(li);
+    });
+    $('camera').textContent = d.camera_he ? 'מצלמה: ' + d.camera_he : '';
+    $('grokOut').textContent = d.grok_prompt || '';
+    $('veoOut').textContent = d.veo_prompt || '';
+    const tips = $('tips'); tips.textContent = '';
+    (d.veo_tips_he || []).forEach(x => { const li = document.createElement('li'); li.textContent = x; tips.append(li); });
+    if (matchMedia('(max-width:900px)').matches) $('out').scrollIntoView({ block: 'start' });
+  }
+
+  const audioEn = { ambient: 'subtle ambient background sound only', sfx: 'sound effects matching each movement', none: 'no audio' };
+
+  function buildPrompt(){
+    const dur = $('duration').value, aspect = $('aspect').value, audio = audioEn[$('audio').value];
+    const style = $('style').value.trim();
+    const times = frameTimes.map((t, i) => `Image ${i + 1} = t ${fmt(t)}s`).join('; ');
+    return `You are a motion director. The first ${frameBlobs.length} images are frames sampled in order from a REFERENCE video (${times}).` +
+      (subjectBlob ? ` The final image is the SUBJECT that must perform this motion in a new video.` : ` No subject image was provided; refer to "the subject from the image".`) +
+      `\n\nTask: work out the body/object MOVEMENT and CAMERA movement in the reference frames only. Ignore who or what appears in the reference; never describe the reference person's appearance. Re-time the motion to fit a ${dur}-second clip.\n` +
+      `Settings: duration ${dur}s, aspect ${aspect}, audio: ${audio}.` + (style ? ` Style/background requested by the user (may be Hebrew, translate it): ${style}.` : '') +
+      `\n\nWrite two English prompts:\n` +
+      `1) grok_prompt for Grok Imagine image-to-video: one paragraph, 60-100 words, starts with "Animate the subject from the image.", timed beats ("0-2s: ..."), camera, style, ends with "Only the subject from the image appears; no women or girls in the scene."\n` +
+      `2) veo_prompt for Veo 3.1 with reference image: labeled lines Subject / Action (timed) / Camera / Style / Format / Audio / Avoid, separated by newlines. Subject line says to keep the reference image's exact appearance. Avoid line must include: morphing, extra limbs, identity drift, women or girls in the scene.\n` +
+      `Describe movements precisely (which limb, direction, speed) and keep them physically plausible.\n\n` +
+      `Return JSON: {"summary_he": one Hebrew sentence, "beats": [{"t": "0.0–2.0s", "he": Hebrew description}], "camera_he": Hebrew string, "grok_prompt": string, "veo_prompt": string, "veo_tips_he": [2-3 short Hebrew tips specific to this motion]}`;
+  }
+
+  const toB64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+
+  $('analyzeBtn').addEventListener('click', async () => {
+    const key = currentKey(); if (!key || !frameBlobs.length) return;
+    const model = ($('model').value.trim() || 'gemini-flash-latest').replace(/^models\//, '');
+    store.set(KEY, key); store.set(MODEL, model); $('keyState').textContent = '(שמור)';
+    ctl = new AbortController();
+    $('analyzeBtn').disabled = true; $('stopBtn').hidden = false;
+    const st = $('analyzeStatus'); st.className = 'status'; st.textContent = 'מנתח את התנועה… בדרך כלל עד חצי דקה.';
+    try {
+      const imgs = subjectBlob ? [...frameBlobs, subjectBlob] : frameBlobs;
+      const parts = [{ text: buildPrompt() }];
+      for (const b of imgs) parts.push({ inline_data: { mime_type: b.type || 'image/jpeg', data: await toB64(b) } });
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST', signal: ctl.signal,
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({ contents: [{ role: 'user', parts }], generationConfig: { responseMimeType: 'application/json', temperature: 0.4 } })
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const s = res.status, m = (body.error && body.error.message) || '';
+        throw { msg: s === 429 ? 'עברת את מכסת החינם לעכשיו. נסה שוב מאוחר יותר.'
+          : (s === 400 && /api key/i.test(m)) || s === 401 || s === 403 ? 'המפתח לא תקין או לא מורשה. בדוק אותו ב-AI Studio.'
+          : s === 404 ? 'המודל לא נמצא. החלף את שם המודל בהגדרות המפתח.'
+          : 'גוגל החזירה שגיאה: ' + (m || s) };
+      }
+      const text = (body.candidates?.[0]?.content?.parts || []).map(p => p.text || '').join('');
+      if (!text) throw { msg: 'לא התקבלה תשובה. ייתכן שהתוכן נחסם; נסה סרטון אחר.' };
+      let d; try { d = JSON.parse(text.replace(/^```(json)?|```$/g, '').trim()); } catch { throw { msg: 'התשובה לא הגיעה בפורמט תקין. לחץ שוב.' }; }
+      if (!d.grok_prompt) throw { msg: 'התשובה חסרה. לחץ שוב.' };
+      render(d);
+      st.className = 'status ok'; st.textContent = 'מוכן. אפשר להעתיק את הפרומפטים.';
+    } catch (e) {
+      if (e && e.name === 'AbortError') { st.textContent = 'הניתוח נעצר.'; }
+      else { st.className = 'status err'; st.textContent = (e && e.msg) || 'אין חיבור לגוגל. בדוק את האינטרנט ונסה שוב.'; }
+    } finally {
+      ctl = null; $('stopBtn').hidden = true; $('analyzeBtn').disabled = !(frameBlobs.length && currentKey());
+    }
+  });
+  $('stopBtn').addEventListener('click', () => ctl && ctl.abort());
+
+  // manual
+  $('manualBtn').addEventListener('click', () => {
+    const raw = $('mMotion').value.trim();
+    if (!raw) { $('manualStatus').textContent = 'כתוב קודם את התנועה.'; return; }
+    const lines = raw.split(/\n|;/).map(s => s.trim()).filter(Boolean);
+    const motion = lines.join('; ');
+    const dur = $('duration').value, aspect = $('aspect').value, audio = audioEn[$('audio').value];
+    const cam = $('mCam').value, pace = $('mPace').value;
+    const style = $('style').value.trim() || 'clean, natural lighting';
+    render({
+      summary_he: 'פרומפטים שנבנו מהתיאור שלך.',
+      beats: lines.map(s => { const m = s.match(/^([\d.\s–-]+s)\s*:\s*(.*)$/); return m ? { t: m[1].replace(/\s/g, ''), he: m[2] } : { t: '', he: s }; }),
+      camera_he: $('mCam').selectedOptions[0].textContent,
+      grok_prompt: `Animate the subject from the image. ${motion}. Camera: ${cam}. ${pace} pace, smooth physically plausible motion, consistent appearance. Style: ${style}. ${aspect} framing, ${dur} seconds. Only the subject from the image appears; no women or girls in the scene.`,
+      veo_prompt: `Subject: the subject from the reference image; keep its exact appearance.\nAction (${dur}s, timed): ${motion}\nCamera: ${cam}\nStyle: ${style}, ${pace} pace\nFormat: ${aspect}\nAudio: ${audio}\nAvoid: morphing, extra limbs, identity drift, women or girls in the scene.`,
+      veo_tips_he: ['פרק את התנועה לטווחי זמן מדויקים כדי שהמודל ישמור על הסדר.', 'ב-Flow אפשר להוסיף מסגרת סיום בתנוחה הסופית כדי לייצב את התנועה.']
+    });
+    $('manualStatus').textContent = 'הפרומפטים עודכנו.';
+  });
+
+  loadKey();
+})();
+</script>
+</body>
+</html>
